@@ -1,13 +1,14 @@
 import {
   Button,
   Flex,
+  Menu,
   Popconfirm,
   Spin,
   Table,
   Tooltip,
   Typography,
 } from "antd";
-import type { TableColumnsType } from "antd";
+import type { MenuProps, TableColumnsType } from "antd";
 import Title from "antd/es/typography/Title";
 import {
   useBulkDeleteEyeglassesMutation,
@@ -15,23 +16,42 @@ import {
   useGetAllEyeglassesQuery,
 } from "../../redux/features/eyeglasses/eyeglassesApi";
 import { NavLink, useLocation } from "react-router-dom";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { TEyeglasses } from "../../types/common";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  ShoppingCartOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
+import { TEyeglasses, TSale } from "../../types/common";
 import Search, { SearchProps } from "antd/es/input/Search";
 import { toast } from "sonner";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import SaleModal from "./SaleModal";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDFDocument from "../../components/pdf/PDFDocument";
+import { items } from "../../constants/filter";
 
 const EyeglassesList = () => {
   const location = useLocation();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [open, setOpen] = useState(false);
+  const [product, setProduct] = useState<TEyeglasses>();
+  const [orderInvoice, setOrderInvoice] = useState<{
+    product: TEyeglasses;
+    sale: TSale;
+  }>();
+  const [query, setQuery] = useState({});
 
-  const { data, isLoading } = useGetAllEyeglassesQuery({});
+  const { data, isLoading, refetch } = useGetAllEyeglassesQuery(query);
   const [deleteEyeglasses] = useDeleteEyeglassesMutation();
   const [bulkDeleteEyeglasses, { isLoading: loading }] =
     useBulkDeleteEyeglassesMutation();
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
+  const onSearch: SearchProps["onSearch"] = (value) => {
+    setQuery({ queryName: "searchTerm", value: value });
+    refetch();
+  };
 
   const confirm = async (id: string) => {
     const res = await deleteEyeglasses(id).unwrap();
@@ -42,7 +62,12 @@ const EyeglassesList = () => {
     }
   };
 
-  const columns: TableColumnsType<Partial<TEyeglasses>> = [
+  const handleSale = (data: TEyeglasses) => {
+    setOpen(true);
+    setProduct(data);
+  };
+
+  const columns: TableColumnsType<TEyeglasses> = [
     {
       title: "Name",
       dataIndex: "name",
@@ -89,14 +114,32 @@ const EyeglassesList = () => {
     {
       title: "Color",
       dataIndex: "color",
+      render: (_value, record) => (
+        <Button
+          onClick={() => handleSale(record)}
+          type="primary"
+          size="small"
+          icon={<ShoppingCartOutlined />}
+        >
+          sale
+        </Button>
+      ),
     },
     {
       title: "Action",
       dataIndex: "action",
-      render: (text, row) => {
+      render: (_value, row) => {
         return (
           <Flex gap={10}>
-            <NavLink to="/dashboard/add-eyeglasses">
+            <NavLink
+              to={{
+                pathname: "/dashboard/add-eyeglasses",
+              }}
+              state={{
+                eyeglass: row,
+                from: location.pathname + "/create-variant",
+              }}
+            >
               <Tooltip title="Create Variant">
                 <Button
                   type="primary"
@@ -110,7 +153,10 @@ const EyeglassesList = () => {
               to={{
                 pathname: "/dashboard/add-eyeglasses",
               }}
-              state={{ eyeglass: row, from: location.pathname }}
+              state={{
+                eyeglass: row,
+                from: location.pathname + "/update-eyeglasses",
+              }}
             >
               <Tooltip title="Edit">
                 <Button
@@ -174,9 +220,22 @@ const EyeglassesList = () => {
     }
   };
 
+  const handleFilter: MenuProps["onClick"] = (e) => {
+    const queryName = e.keyPath[1];
+    const value = e.keyPath[0];
+    setQuery({ queryName, value });
+    refetch();
+  };
+
   return (
     <div>
       <Title level={2}>Eyeglasses List</Title>
+      <SaleModal
+        open={open}
+        setOpen={setOpen}
+        product={product as TEyeglasses}
+        setOrderInvoice={setOrderInvoice as Dispatch<SetStateAction<object>>}
+      />
       <Flex
         gap={20}
         style={{
@@ -184,7 +243,7 @@ const EyeglassesList = () => {
         }}
       >
         <Search
-          placeholder="Search Here"
+          placeholder="Search by name and color"
           size="large"
           onSearch={onSearch}
           enterButton
@@ -197,6 +256,24 @@ const EyeglassesList = () => {
             Add New
           </Button>
         </NavLink>
+
+        {orderInvoice && orderInvoice?.product && (
+          <PDFDownloadLink
+            document={<PDFDocument data={orderInvoice} />}
+            fileName="invoice.pdf"
+          >
+            {({ loading }) =>
+              loading ? (
+                "Loading document..."
+              ) : (
+                <Button type="primary" icon={<DownloadOutlined />} size="large">
+                  Download Invoice
+                </Button>
+              )
+            }
+          </PDFDownloadLink>
+        )}
+
         <div style={{ marginBottom: 16 }}>
           <Button
             type="primary"
@@ -214,6 +291,20 @@ const EyeglassesList = () => {
           </span>
         </div>
       </Flex>
+      <div
+        style={{
+          margin: "10px 0px",
+        }}
+      >
+        <Title level={4}>Filter Eye Glasses </Title>
+        <Menu
+          onClick={handleFilter}
+          style={{ width: 256 }}
+          mode="vertical"
+          items={items}
+        />
+      </div>
+
       {!isLoading ? (
         <div>
           <Table

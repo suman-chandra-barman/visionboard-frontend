@@ -14,9 +14,11 @@ const eyeglassesApi = baseApi.injectEndpoints({
     }),
 
     getAllEyeglasses: builder.query({
-      query: () => {
+      query: (query) => {
         return {
-          url: "/eyeglasses",
+          url: `/eyeglasses?${query?.queryName}=${
+            query?.value ? query?.value : {}
+          }`,
           method: "GET",
         };
       },

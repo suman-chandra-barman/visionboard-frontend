@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import App from "../App";
-import Dashboard from "../pages/dashboard/Dashboard";
 import Eyeglasses from "../pages/dashboard/EyeglassesList";
 import AddEyeglasses from "../pages/dashboard/AddEyeglasses";
 import Sales from "../pages/dashboard/Sales";
@@ -16,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Dashboard />,
+        element: <Eyeglasses />,
       },
       {
         path: "dashboard/add-eyeglasses",

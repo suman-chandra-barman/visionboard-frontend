@@ -17,3 +17,18 @@ export type TEyeglasses = {
   isDeleted: boolean;
   __v: number;
 };
+
+export type TSale = {
+  _id: string;
+  productId: string;
+  buyerName: string;
+  quantity: number;
+  date: Date;
+};
+export type TSaleWithProduct = {
+  _id: string;
+  productId: TEyeglasses;
+  buyerName: string;
+  quantity: number;
+  date: Date;
+};
