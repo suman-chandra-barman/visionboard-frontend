@@ -1,12 +1,13 @@
-import LHModal from "../../components/modal/LHModal";
+import LHModal from "../../../components/modal/LHModal";
 import { Dispatch, SetStateAction, useState } from "react";
-import LNForm from "../../components/form/LNForm";
-import LNInput from "../../components/form/LNInput";
+import LNForm from "../../../components/form/LNForm";
+import LNInput from "../../../components/form/LNInput";
 import { FieldValues } from "react-hook-form";
 import { Button, DatePicker, DatePickerProps } from "antd";
-import { useCreateSalesMutation } from "../../redux/features/sales/salesApi";
+import { useCreateSalesMutation } from "../../../redux/features/sales/salesApi";
 import { toast } from "sonner";
-import { TEyeglasses } from "../../types/common";
+import { TEyeglasses } from "../../../types/common";
+import Title from "antd/es/typography/Title";
 
 type TSaleModalProps = {
   open: boolean;
@@ -51,7 +52,10 @@ const SaleModal = ({
   };
 
   return (
-    <LHModal title="Sale Eyeglasses" open={open} setOpen={setOpen}>
+    <LHModal open={open} setOpen={setOpen}>
+      <Title level={4} style={{ textAlign: "center", margin: "10px 0px" }}>
+        Sale Eyeglasses
+      </Title>
       <LNForm onSubmit={handleSale}>
         <LNInput
           type="number"
@@ -80,8 +84,13 @@ const SaleModal = ({
           required
           style={{ display: "block", marginBottom: "20px", marginTop: "10px" }}
         />
-        <Button type="primary" htmlType="submit" loading={isLoading}>
-          Add Sale
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={isLoading}
+          style={{ width: "100%" }}
+        >
+          Sale
         </Button>
       </LNForm>
     </LHModal>

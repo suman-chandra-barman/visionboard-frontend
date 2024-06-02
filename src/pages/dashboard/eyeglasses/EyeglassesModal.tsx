@@ -1,57 +1,51 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Col, Row } from "antd";
 import { FieldValues } from "react-hook-form";
-import LNForm from "../../components/form/LNForm";
-import LNInput from "../../components/form/LNInput";
-import LNFile from "../../components/form/LNFile";
-import LNSelect from "../../components/form/LNSelect";
+import LNForm from "../../../components/form/LNForm";
+import LNInput from "../../../components/form/LNInput";
+import LNFile from "../../../components/form/LNFile";
+import LNSelect from "../../../components/form/LNSelect";
 import {
   eyeglassesBrands,
   frameMaterials,
   frameShapes,
   genderCategories,
   lensTypes,
-} from "../../constants/eyeglasses";
-import formDataConverter from "../../utils/formDataConverter";
+} from "../../../constants/eyeglasses";
 import {
   useCreateEyeglassesMutation,
   useUpdateEyeglassesMutation,
-} from "../../redux/features/eyeglasses/eyeglassesApi";
-import { useLocation } from "react-router-dom";
+} from "../../../redux/features/eyeglasses/eyeglassesApi";
 import { toast } from "sonner";
 import Title from "antd/es/typography/Title";
+import imageUploader from "../../../utils/imageUploader";
+import { TEyeglasses } from "../../../types/common";
+import LHModal from "../../../components/modal/LHModal";
+import { Dispatch, SetStateAction } from "react";
 
-const AddEyeglasses = () => {
+type TEyeglassModalProps = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  product: TEyeglasses;
+  title: string;
+};
+
+const EyeglassesModal = ({
+  open,
+  setOpen,
+  product,
+  title,
+}: TEyeglassModalProps) => {
+  const defaultValues = { ...product };
+
   const [updateEyeglasses, { isLoading: updating }] =
     useUpdateEyeglassesMutation();
   const [createEyeglasses, { isLoading: creating }] =
     useCreateEyeglassesMutation();
 
-  const location = useLocation();
-  const eyeglass = location?.state?.eyeglass;
-  const from = location?.state?.from;
-  let formTitle = "Add Eyeglasses";
-  let defaultValues = {};
-
-  console.log("eyeglass", eyeglass);
-  if (from === "/dashboard/eyeglassesList/create-variant") {
-    formTitle = "Create New Variant";
-  } else if (from === "/dashboard/eyeglassesList/update-eyeglasses") {
-    formTitle = "Update Eyeglasses";
-  }
-
-  if (
-    (eyeglass && from === "/dashboard/eyeglassesList/create-variant") ||
-    from === "/dashboard/eyeglassesList/update-eyeglasses"
-  ) {
-    defaultValues = {
-      ...eyeglass,
-    };
-  }
-
   const onSubmit = async (data: FieldValues) => {
     const { price, quantity, bridgeSize, templeLength } = data;
-    const values = {
+    const values: Partial<TEyeglasses> = {
       ...data,
       price: Number(price),
       quantity: Number(quantity),
@@ -59,29 +53,30 @@ const AddEyeglasses = () => {
       templeLength: Number(templeLength),
     };
 
-    const formData = formDataConverter(values);
-
-    if (eyeglass) {
-      console.log("eyeGlass exit");
+    if (data.file) {
+      const imageLink = await imageUploader(data.file);
+      values.image = imageLink;
     }
 
     try {
-      //Update eyeglasses
-      if (eyeglass && from === "/dashboard/eyeglassesList/update-eyeglasses") {
+      // Update eyeglasses
+      if (product && title === "Update Eyeglass") {
         const updateData = {
-          id: eyeglass?._id,
-          data: formData,
+          id: product?._id,
+          data: values,
         };
         const res = await updateEyeglasses(updateData).unwrap();
         if (res.success) {
-          toast.success(res?.message || "Successful!");
+          toast.success("Eyeglasses updated successful!");
+          setOpen(false);
         }
-      }
-
-      //Create New Eyeglasses and New Eyeglasses Variant
-      const res = await createEyeglasses(formData).unwrap();
-      if (res.success) {
-        toast.success(res?.message || "Successful!");
+        // Create New Eyeglasses and New Eyeglasses Variant
+      } else if (title === "Create New Eyeglass") {
+        const res = await createEyeglasses(values).unwrap();
+        if (res.success) {
+          toast.success("Eyeglasses created successful!");
+          setOpen(false);
+        }
       }
     } catch (error: any) {
       console.error(error);
@@ -90,10 +85,11 @@ const AddEyeglasses = () => {
   };
 
   return (
-    <div>
-      <Title level={2} style={{ marginBottom: "20px", fontWeight: "bold" }}>
-        {formTitle}
+    <LHModal open={open} setOpen={setOpen} width={1000}>
+      <Title level={2} style={{ margin: "20px 0px", fontWeight: "bold" }}>
+        {title}
       </Title>
+      {/* form section */}
       <LNForm onSubmit={onSubmit} defaultValues={defaultValues}>
         <Row gutter={20}>
           <Col sm={24} lg={8}>
@@ -101,7 +97,6 @@ const AddEyeglasses = () => {
               type="text"
               name="name"
               label="Eyeglasses Name"
-              placeholder="Enter Eyeglasses Name"
               rules={{ required: "Eyeglasses Name is required" }}
             />
           </Col>
@@ -110,7 +105,6 @@ const AddEyeglasses = () => {
               type="number"
               name="price"
               label="Product Price"
-              placeholder="Enter Product Price"
               rules={{ required: "Product Price is required" }}
             />
           </Col>
@@ -127,7 +121,6 @@ const AddEyeglasses = () => {
               type="number"
               name="quantity"
               label="Product Quantity"
-              placeholder="Enter Product Quantity"
               rules={{ required: "Product Quantity is required" }}
             />
           </Col>
@@ -150,7 +143,7 @@ const AddEyeglasses = () => {
           <Col sm={24} lg={8}>
             <LNSelect
               name="lensType"
-              label="Lense Type"
+              label="Lens Type"
               options={lensTypes}
               rules={{ required: "Lens Type is required" }}
             />
@@ -168,17 +161,14 @@ const AddEyeglasses = () => {
               type="text"
               name="color"
               label="Color Name"
-              placeholder="Enter Color Name"
               rules={{ required: "Color Name is required" }}
             />
           </Col>
-
           <Col sm={24} lg={8}>
             <LNInput
               type="number"
               name="templeLength"
               label="Temple Length(mm)"
-              placeholder="Enter Temple Length "
               rules={{ required: "Temple Length is required" }}
             />
           </Col>
@@ -187,7 +177,6 @@ const AddEyeglasses = () => {
               type="number"
               name="bridgeSize"
               label="Bridge Size (mm)"
-              placeholder="Enter Bridge Size"
               rules={{ required: "Bridge Size is required" }}
             />
           </Col>
@@ -195,7 +184,7 @@ const AddEyeglasses = () => {
             <LNFile
               name="file"
               label="Add Image"
-              rules={{ required: "Image is required" }}
+              rules={product?.image ? {} : { required: "Image is required" }}
             />
           </Col>
         </Row>
@@ -205,11 +194,11 @@ const AddEyeglasses = () => {
           size="large"
           loading={updating || creating}
         >
-          {formTitle}
+          {title}
         </Button>
       </LNForm>
-    </div>
+    </LHModal>
   );
 };
 
-export default AddEyeglasses;
+export default EyeglassesModal;

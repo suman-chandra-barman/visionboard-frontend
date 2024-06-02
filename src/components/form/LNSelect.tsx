@@ -3,12 +3,21 @@ import { Controller } from "react-hook-form";
 
 type TLNSelectProps = {
   name: string;
-  label: string;
   options: { value: string; label: string }[];
+  label?: string;
+  placeholder?: string;
   rules?: object;
+  size?: "large" | "small";
 };
 
-const LNSelect = ({ name, label, options, rules }: TLNSelectProps) => {
+const LNSelect = ({
+  name,
+  label,
+  options,
+  rules,
+  placeholder = "Please Select",
+  size = "large",
+}: TLNSelectProps) => {
   return (
     <Controller
       name={name}
@@ -20,10 +29,11 @@ const LNSelect = ({ name, label, options, rules }: TLNSelectProps) => {
           validateStatus={error ? "error" : ""}
         >
           <Select
-            placeholder="Please select"
+            placeholder={placeholder}
             style={{ width: "100%" }}
             {...field}
             options={options}
+            size={size}
           />
           {error && <small style={{ color: "red" }}>{error.message}</small>}
         </Form.Item>

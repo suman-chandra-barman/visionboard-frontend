@@ -7,9 +7,17 @@ type TLNInputProps = {
   label?: string;
   placeholder?: string;
   rules?: object;
+  size?: "large" | "small";
 };
 
-const LNInput = ({ type, name, label, placeholder, rules }: TLNInputProps) => {
+const LNInput = ({
+  type,
+  name,
+  label,
+  placeholder,
+  rules,
+  size = "large",
+}: TLNInputProps) => {
   return (
     <Controller
       name={name}
@@ -20,7 +28,13 @@ const LNInput = ({ type, name, label, placeholder, rules }: TLNInputProps) => {
           style={{ marginBottom: "20px", fontWeight: 500 }}
           validateStatus={error ? "error" : ""}
         >
-          <Input {...field} type={type} id={name} placeholder={placeholder} />
+          <Input
+            {...field}
+            type={type}
+            id={name}
+            placeholder={placeholder}
+            size={size}
+          />
           {error && <small style={{ color: "red" }}>{error.message}</small>}
         </Form.Item>
       )}

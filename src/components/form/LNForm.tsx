@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form } from "antd";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import {
   FieldValues,
   FormProvider,
@@ -26,6 +26,8 @@ const LNForm = ({
   resolver,
 }: TLNFromProps) => {
   const formConfig: TFormConfig = {};
+  const methods = useForm(formConfig);
+
   if (defaultValues) {
     formConfig["defaultValues"] = defaultValues;
   }
@@ -33,7 +35,13 @@ const LNForm = ({
   if (resolver) {
     formConfig["resolver"] = resolver;
   }
-  const methods = useForm(formConfig);
+
+  useEffect(() => {
+    if (defaultValues) {
+      methods.reset(defaultValues);
+    }
+  }, [defaultValues, methods]);
+
   const handleSubmit: SubmitHandler<FieldValues> = (data) => {
     onSubmit(data);
     methods.reset();
@@ -44,7 +52,6 @@ const LNForm = ({
       <Form layout="vertical" onFinish={methods.handleSubmit(handleSubmit)}>
         {children}
       </Form>
-      ;
     </FormProvider>
   );
 };

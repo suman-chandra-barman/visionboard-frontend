@@ -3,19 +3,19 @@ import { Modal } from "antd";
 
 type TLHModalProps = {
   children: React.ReactNode;
-  title: string;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  width?: number;
 };
 
-const LHModal = ({ children, title, open, setOpen }: TLHModalProps) => {
+const LHModal = ({ children, open, setOpen, width }: TLHModalProps) => {
   return (
     <Modal
-      title={title}
       centered
       open={open}
       onOk={() => setOpen(false)}
       onCancel={() => setOpen(false)}
+      width={width}
       footer
     >
       {children}

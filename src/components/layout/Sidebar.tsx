@@ -46,6 +46,7 @@ const menuItems = [
 const Sidebar = () => {
   return (
     <Sider
+      theme="light"
       breakpoint="lg"
       collapsedWidth="0"
       onBreakpoint={(broken) => {
@@ -60,26 +61,22 @@ const Sidebar = () => {
         left: 0,
         top: 0,
         bottom: 0,
+        zIndex: 5,
       }}
     >
       <div
         className="demo-logo-vertical"
         style={{
-          color: "white",
           padding: "10px 5px",
         }}
       >
         <Link to="/">
-          <Title
-            level={3}
-            style={{ textAlign: "center", color: "white", fontWeight: "bold" }}
-          >
-            LenseHub
+          <Title level={3} style={{ textAlign: "center", fontWeight: "bold" }}>
+            Lense<span style={{ color: "#1677ff" }}>Hub</span>
           </Title>
         </Link>
       </div>
       <Menu
-        theme="dark"
         mode="inline"
         defaultSelectedKeys={["1"]}
         defaultOpenKeys={["sub1"]}

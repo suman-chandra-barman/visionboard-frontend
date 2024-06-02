@@ -8,16 +8,20 @@ import {
   theme,
 } from "antd";
 import { useAppDispatch } from "../../redux/hook";
-import { NavLink } from "react-router-dom";
 import { useGetMeQuery } from "../../redux/features/user/userApi";
 import { UserOutlined } from "@ant-design/icons";
 import { logout } from "../../redux/features/auth/authSlice";
+import { useEffect } from "react";
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 const Header = () => {
-  const { data } = useGetMeQuery({});
+  const { data, refetch } = useGetMeQuery({});
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const {
     token: { colorBgContainer },
@@ -27,36 +31,18 @@ const Header = () => {
     {
       key: "1",
       label: (
-        <NavLink
-          target="_blank"
-          rel="noopener noreferrer"
-          to="https://www.antgroup.com"
-          style={{ fontWeight: "bolder", margin: "5px 30px" }}
-        >
-          Profile
-        </NavLink>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <p
+        <Typography
           onClick={() => dispatch(logout())}
           style={{ fontWeight: "bold", margin: "5px 30px" }}
         >
           Logout
-        </p>
+        </Typography>
       ),
     },
   ];
   return (
     <div style={{ padding: "10px 46px", background: colorBgContainer }}>
-      <Flex justify="space-between" align="center">
-        <div>
-          <Title level={5} style={{ fontWeight: "bold" }}>
-            Welcome to LensHub
-          </Title>
-        </div>
+      <Flex justify="end" align="center">
         <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight">
           <a onClick={(e) => e.preventDefault()}>
             <Flex justify="center" align="center" gap={10}>

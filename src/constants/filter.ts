@@ -1,7 +1,12 @@
 import type { MenuProps } from "antd";
+
 type MenuItem = Required<MenuProps>["items"][number];
 
 export const items: MenuItem[] = [
+  {
+    key: "Show All",
+    label: "Show All",
+  },
   {
     key: "frameMaterial",
     label: "Frame Material",

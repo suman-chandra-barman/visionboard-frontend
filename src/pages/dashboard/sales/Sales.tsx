@@ -3,11 +3,10 @@ import type { MenuProps, TableColumnsType } from "antd";
 import Title from "antd/es/typography/Title";
 import { DownOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { useGetAllSalesQuery } from "../../redux/features/sales/salesApi";
-import { TSale, TSaleWithProduct } from "../../types/common";
+import { useGetAllSalesQuery } from "../../../redux/features/sales/salesApi";
+import { TSale, TSaleWithProduct } from "../../../types/common";
 
 const Sales = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [query, setQuery] = useState({});
   const { data, isLoading, refetch } = useGetAllSalesQuery(query);
 
@@ -81,15 +80,6 @@ const Sales = () => {
     return { ...sale, key: id };
   });
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-
   const handleHistory: MenuProps["onClick"] = (e) => {
     const day = e.key;
     setQuery({ day });
@@ -110,12 +100,10 @@ const Sales = () => {
       {!isLoading ? (
         <div>
           <Table
-            rowSelection={{
-              type: "checkbox",
-              ...rowSelection,
-            }}
             columns={columns}
             dataSource={sales}
+            pagination={{ pageSize: 50 }}
+            scroll={{ x: 600 }}
           />
         </div>
       ) : (

@@ -1,8 +1,12 @@
 import {
   Button,
+  Col,
   Flex,
+  Grid,
+  Image,
   Menu,
   Popconfirm,
+  Row,
   Spin,
   Table,
   Tooltip,
@@ -14,8 +18,8 @@ import {
   useBulkDeleteEyeglassesMutation,
   useDeleteEyeglassesMutation,
   useGetAllEyeglassesQuery,
-} from "../../redux/features/eyeglasses/eyeglassesApi";
-import { NavLink, useLocation } from "react-router-dom";
+} from "../../../redux/features/eyeglasses/eyeglassesApi";
+import { NavLink } from "react-router-dom";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -23,30 +27,38 @@ import {
   ShoppingCartOutlined,
   DownloadOutlined,
 } from "@ant-design/icons";
-import { TEyeglasses, TSale } from "../../types/common";
+import { TEyeglasses, TSale } from "../../../types/common";
 import Search, { SearchProps } from "antd/es/input/Search";
 import { toast } from "sonner";
-import { Dispatch, SetStateAction, useState } from "react";
-import SaleModal from "./SaleModal";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import SaleModal from "../sales/SaleModal";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import PDFDocument from "../../components/pdf/PDFDocument";
-import { items } from "../../constants/filter";
+import PDFDocument from "../../../components/pdf/PDFDocument";
+import { items } from "../../../constants/filter";
+import EyeglassesModal from "./EyeglassesModal";
 
 const EyeglassesList = () => {
-  const location = useLocation();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [open, setOpen] = useState(false);
   const [product, setProduct] = useState<TEyeglasses>();
+  const [open, setOpen] = useState(false);
+  const [openEyeglass, setOpenEyeglass] = useState(false);
   const [orderInvoice, setOrderInvoice] = useState<{
     product: TEyeglasses;
     sale: TSale;
   }>();
   const [query, setQuery] = useState({});
+  const [title, setTitle] = useState("");
 
   const { data, isLoading, refetch } = useGetAllEyeglassesQuery(query);
   const [deleteEyeglasses] = useDeleteEyeglassesMutation();
   const [bulkDeleteEyeglasses, { isLoading: loading }] =
     useBulkDeleteEyeglassesMutation();
+
+  const screens = Grid.useBreakpoint();
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const onSearch: SearchProps["onSearch"] = (value) => {
     setQuery({ queryName: "searchTerm", value: value });
@@ -66,31 +78,71 @@ const EyeglassesList = () => {
     setOpen(true);
     setProduct(data);
   };
+  const handleCreateOrUpdate = (data: TEyeglasses, heading: string) => {
+    setProduct(data);
+    setTitle(heading);
+    setOpenEyeglass(true);
+  };
 
   const columns: TableColumnsType<TEyeglasses> = [
     {
       title: "Name",
       dataIndex: "name",
+      width: 200,
       render: (text, row) => {
         return (
-          <div>
-            <NavLink
-              to="/"
-              style={{
-                fontWeight: "500",
-              }}
-            >
-              {text}
-            </NavLink>
-            <Typography
-              style={{
-                fontWeight: "500",
-                color: "GrayText",
-              }}
-            >
-              Brand: {row?.brand}
-            </Typography>
-          </div>
+          <Row gutter={5}>
+            <Col xs={24} lg={8}>
+              <NavLink
+                to="/"
+                style={{
+                  fontWeight: "500",
+                }}
+              >
+                <Image
+                  alt="eyeglasses"
+                  width={60}
+                  height={60}
+                  src={row?.image}
+                  preview={{
+                    mask: (
+                      <div
+                        style={{
+                          textAlign: "center",
+                          color: "#fff",
+                          fontSize: "14px",
+                        }}
+                      >
+                        View
+                      </div>
+                    ),
+                  }}
+                />
+              </NavLink>
+            </Col>
+            <Col xs={24} lg={16}>
+              <Row>
+                <Col>
+                  <NavLink
+                    to="/"
+                    style={{
+                      fontWeight: "500",
+                    }}
+                  >
+                    {text}
+                  </NavLink>
+                  <Typography
+                    style={{
+                      fontWeight: "500",
+                      color: "GrayText",
+                    }}
+                  >
+                    Brand: {row?.brand}
+                  </Typography>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         );
       },
     },
@@ -104,69 +156,45 @@ const EyeglassesList = () => {
       align: "center",
     },
     {
-      title: "Material",
-      dataIndex: "frameMaterial",
-    },
-    {
-      title: "Shape",
-      dataIndex: "frameShape",
-    },
-    {
       title: "Color",
       dataIndex: "color",
-      render: (_value, record) => (
-        <Button
-          onClick={() => handleSale(record)}
-          type="primary"
-          size="small"
-          icon={<ShoppingCartOutlined />}
-        >
-          sale
-        </Button>
-      ),
     },
     {
-      title: "Action",
+      title: "Actions",
       dataIndex: "action",
       render: (_value, row) => {
         return (
-          <Flex gap={10}>
-            <NavLink
-              to={{
-                pathname: "/dashboard/add-eyeglasses",
-              }}
-              state={{
-                eyeglass: row,
-                from: location.pathname + "/create-variant",
-              }}
-            >
-              <Tooltip title="Create Variant">
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  size="small"
-                  shape="circle"
-                />
-              </Tooltip>
-            </NavLink>
-            <NavLink
-              to={{
-                pathname: "/dashboard/add-eyeglasses",
-              }}
-              state={{
-                eyeglass: row,
-                from: location.pathname + "/update-eyeglasses",
-              }}
-            >
-              <Tooltip title="Edit">
-                <Button
-                  type="primary"
-                  icon={<EditOutlined />}
-                  size="small"
-                  shape="circle"
-                />
-              </Tooltip>
-            </NavLink>
+          <Flex gap={screens.xs || screens.sm ? 10 : 20}>
+            <Tooltip title="Sale Eyeglasses">
+              <Button
+                onClick={() => handleSale(row)}
+                type="primary"
+                size="small"
+                icon={<ShoppingCartOutlined />}
+              >
+                sale
+              </Button>
+            </Tooltip>
+            <Tooltip title="Create Variant">
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => handleCreateOrUpdate(row, "Create New Eyeglass")}
+                size="small"
+                shape="circle"
+              />
+            </Tooltip>
+
+            <Tooltip title="Edit">
+              <Button
+                type="primary"
+                onClick={() => handleCreateOrUpdate(row, "Update Eyeglass")}
+                icon={<EditOutlined />}
+                size="small"
+                shape="circle"
+              />
+            </Tooltip>
+
             <Tooltip title="Delete">
               <Popconfirm
                 title="Delete eyeglasses?"
@@ -236,14 +264,21 @@ const EyeglassesList = () => {
         product={product as TEyeglasses}
         setOrderInvoice={setOrderInvoice as Dispatch<SetStateAction<object>>}
       />
+      <EyeglassesModal
+        title={title}
+        open={openEyeglass}
+        setOpen={setOpenEyeglass}
+        product={product as TEyeglasses}
+      />
       <Flex
         gap={20}
+        wrap="wrap"
         style={{
-          margin: "20px 0px",
+          marginTop: "20px",
         }}
       >
         <Search
-          placeholder="Search by name and color"
+          placeholder="Search by Name or Color"
           size="large"
           onSearch={onSearch}
           enterButton
@@ -274,7 +309,7 @@ const EyeglassesList = () => {
           </PDFDownloadLink>
         )}
 
-        <div style={{ marginBottom: 16 }}>
+        <div>
           <Button
             type="primary"
             onClick={handleBulkDelete}
@@ -291,17 +326,20 @@ const EyeglassesList = () => {
           </span>
         </div>
       </Flex>
-      <div
-        style={{
-          margin: "10px 0px",
-        }}
-      >
-        <Title level={4}>Filter Eye Glasses </Title>
+      <div>
         <Menu
           onClick={handleFilter}
-          style={{ width: 256 }}
-          mode="vertical"
+          mode={screens.xs ? "vertical" : "horizontal"}
           items={items}
+          theme="light"
+          defaultSelectedKeys={["Show All"]}
+          style={{
+            fontWeight: 400,
+            fontSize: "16px",
+            marginBottom: "40px",
+            marginTop: "10px",
+            width: screens.xs ? 170 : "auto",
+          }}
         />
       </div>
 
@@ -314,6 +352,8 @@ const EyeglassesList = () => {
             }}
             columns={columns}
             dataSource={eyeglasses}
+            pagination={{ pageSize: 50 }}
+            scroll={{ x: 600 }}
           />
         </div>
       ) : (

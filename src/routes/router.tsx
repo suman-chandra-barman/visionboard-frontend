@@ -2,10 +2,11 @@ import { createBrowserRouter } from "react-router-dom";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import App from "../App";
-import Eyeglasses from "../pages/dashboard/EyeglassesList";
-import AddEyeglasses from "../pages/dashboard/AddEyeglasses";
-import Sales from "../pages/dashboard/Sales";
+import Eyeglasses from "../pages/dashboard/eyeglasses/EyeglassesList";
+import AddEyeglasses from "../pages/dashboard/eyeglasses/AddEyeglasses";
+import Sales from "../pages/dashboard/sales/Sales";
 import NotFound from "../pages/NotFound";
+import Dashboard from "../pages/dashboard/dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -15,7 +16,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Eyeglasses />,
+        element: <Dashboard />,
       },
       {
         path: "dashboard/add-eyeglasses",
