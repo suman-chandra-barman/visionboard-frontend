@@ -7,6 +7,7 @@ import AddEyeglasses from "../pages/dashboard/eyeglasses/AddEyeglasses";
 import Sales from "../pages/dashboard/sales/Sales";
 import NotFound from "../pages/NotFound";
 import Dashboard from "../pages/dashboard/dashboard/Dashboard";
+import Users from "../pages/dashboard/users/Users";
 
 const router = createBrowserRouter([
   {
@@ -26,10 +27,13 @@ const router = createBrowserRouter([
         path: "dashboard/eyeglassesList",
         element: <Eyeglasses />,
       },
-
       {
         path: "sales",
         element: <Sales />,
+      },
+      {
+        path: "users",
+        element: <Users />,
       },
     ],
   },

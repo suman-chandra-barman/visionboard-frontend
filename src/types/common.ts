@@ -32,3 +32,19 @@ export type TSaleWithProduct = {
   quantity: number;
   date: Date;
 };
+
+export type TUser = {
+  _id: string;
+  name: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  }
+  email: string;
+  contactNo: string;
+  address: string;
+  age: number;
+  gender:"Male" | "Female";
+  role: "Manager" | "User";
+  isDeleted: boolean;
+}

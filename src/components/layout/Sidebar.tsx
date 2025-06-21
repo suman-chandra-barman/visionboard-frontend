@@ -7,6 +7,7 @@ import {
   ShoppingCartOutlined,
   PlusOutlined,
   ShoppingOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 import { Link, NavLink } from "react-router-dom";
 import Title from "antd/es/typography/Title";
@@ -34,12 +35,18 @@ const menuItems = [
           <NavLink to="/dashboard/eyeglassesList">Eyeglasses List</NavLink>
         ),
       },
+       
     ],
   },
   {
     key: 3,
     icon: React.createElement(ShoppingCartOutlined),
     label: <NavLink to="/sales">Sales</NavLink>,
+  },
+  {
+    key: 4,
+    icon: React.createElement(UserOutlined),
+    label: <NavLink to="users">Users</NavLink>,
   },
 ];
 
