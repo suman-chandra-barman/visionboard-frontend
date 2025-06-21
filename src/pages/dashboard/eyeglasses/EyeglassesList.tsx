@@ -91,7 +91,7 @@ const EyeglassesList = () => {
       width: 200,
       render: (text, row) => {
         return (
-          <Row gutter={5}>
+          <Row gutter={5} align={"middle"} style={{ marginRight: "-40px" }}>
             <Col xs={24} lg={8}>
               <NavLink
                 to="/"
@@ -110,7 +110,7 @@ const EyeglassesList = () => {
                         style={{
                           textAlign: "center",
                           color: "#fff",
-                          fontSize: "14px",
+                          fontSize: "14px"
                         }}
                       >
                         View
@@ -277,8 +277,8 @@ const EyeglassesList = () => {
           marginTop: "20px",
         }}
       >
-        <Search
-          placeholder="Search by Name or Color"
+        <Search 
+          placeholder="Name or color"
           size="large"
           onSearch={onSearch}
           enterButton

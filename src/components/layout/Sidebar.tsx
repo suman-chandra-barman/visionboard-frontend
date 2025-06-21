@@ -72,7 +72,7 @@ const Sidebar = () => {
       >
         <Link to="/">
           <Title level={3} style={{ textAlign: "center", fontWeight: "bold" }}>
-            Lense<span style={{ color: "#1677ff" }}>Hub</span>
+            Vision<span style={{ color: "#1677ff" }}>Board</span>
           </Title>
         </Link>
       </div>

@@ -34,7 +34,7 @@ const MainLayout = () => {
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          LensHub ©{new Date().getFullYear()} Created by Alien Technology.
+          VisionBoard ©{new Date().getFullYear()} Created by Suman Chandra Barman.
         </Footer>
       </Layout>
     </Layout>
