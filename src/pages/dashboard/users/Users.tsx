@@ -6,6 +6,7 @@ import { TUser } from "../../../types/common";
 
 const Users = () => {
   const { data, isLoading } = useGetAllUsersQuery({});
+  console.log("Users data:", data);
 
   const columns: TableProps<TUser>["columns"] = [
     {
@@ -19,11 +20,34 @@ const Users = () => {
       ),
     },
     { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Gender", dataIndex: "gender", key: "gender" },
-    { title: "Age", dataIndex: "age", key: "age" },
+    {
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
+      filters: [
+        { text: 'Male', value: 'Male' },
+        { text: 'Female', value: 'Female' },
+        { text: 'Other', value: 'Other' },
+      ],
+       onFilter: (value, record) => record.gender === value,
+    },
+    {
+      title: "Age",
+      dataIndex: "age",
+      key: "age",
+      sorter: (a, b) => a.age - b.age
+    },
     { title: "Contact No", dataIndex: "contactNo", key: "contactNo" },
     { title: "Address", dataIndex: "address", key: "address" },
-    { title: "Role", dataIndex: "role", key: "role" },
+    { title: "Role", 
+      dataIndex: "role", 
+      key: "role",
+      filters: [
+        { text: 'Manager', value: 'Manager' },
+        { text: 'User', value: 'User' }
+      ],
+       onFilter: (value, record) => record.role === value,
+    },
     {
       title: "Status",
       dataIndex: "isDeleted",
@@ -41,17 +65,18 @@ const Users = () => {
     },
   ];
 
-  
+
 
   return (
     <div>
       <Title level={2}>User List</Title>
+      <Title level={4}>Total {data?.data?.length ? data.data.length : 0}</Title>
       {isLoading ? (
-        <div style={{ padding: "16px"}}>
-          <Skeleton active title={false} paragraph={{ rows: 10 }}/>
+        <div style={{ padding: "16px" }}>
+          <Skeleton active title={false} paragraph={{ rows: 10 }} />
         </div>
       ) : (
-        <Table<TUser> columns={columns} dataSource={data?.data} />
+        <Table<TUser> columns={columns} dataSource={data?.data} loading={isLoading} />
       )}
     </div>
   );

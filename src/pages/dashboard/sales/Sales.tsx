@@ -31,17 +31,31 @@ const Sales = () => {
       render: (_value, record) => {
         return <p>{record?.productId?.price}</p>;
       },
+      sorter: (a, b) => a.productId.price - b.productId.price,
     },
 
     {
       title: "Quantity",
       dataIndex: "quantity",
       align: "center",
+      sorter: (a, b) => a.quantity - b.quantity,
     },
     {
       title: "Date",
       dataIndex: "date",
-    },
+      render: (value) => {
+        const date = new Date(value);
+        return (
+          <>
+            {date.toLocaleDateString()}
+          </>
+        );
+      },
+      sorter: (a, b) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      }
+    }
+
   ];
 
   const items: MenuProps["items"] = [

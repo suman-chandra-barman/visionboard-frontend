@@ -44,7 +44,7 @@ export type TUser = {
   contactNo: string;
   address: string;
   age: number;
-  gender:"Male" | "Female";
-  role: "Manager" | "User";
+  role: 'User' | 'Manager';
+  gender: 'Male' | 'Female' | 'Other';
   isDeleted: boolean;
 }
