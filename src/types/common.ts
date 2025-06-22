@@ -20,7 +20,7 @@ export type TEyeglasses = {
 
 export type TSale = {
   _id: string;
-  productId: string;
+  productId: TEyeglasses;
   buyerName: string;
   quantity: number;
   date: Date;

@@ -16,7 +16,7 @@ const TotalSaleCard = ({ sales }: { sales: TSale[] }) => {
                         <span style={{ color: "#1677ff", fontWeight: "bold" }}>{totalSales.toFixed(2)}</span>
                     </Flex>
                     <Flex justify="space-between" align="center" gap={10}>
-                        <span>Total product</span>
+                        <span>Total product sale</span>
                         <span style={{ color: "#1677ff", fontWeight: "bold" }}>{totalProductSales}</span>
                     </Flex>
                 </div>

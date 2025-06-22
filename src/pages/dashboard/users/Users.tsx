@@ -6,7 +6,6 @@ import { TUser } from "../../../types/common";
 
 const Users = () => {
   const { data, isLoading } = useGetAllUsersQuery({});
-  console.log("Users data:", data);
 
   const columns: TableProps<TUser>["columns"] = [
     {

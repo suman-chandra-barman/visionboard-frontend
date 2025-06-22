@@ -145,20 +145,52 @@ const EyeglassesList = () => {
           </Row>
         );
       },
+      filters: [
+        { text: "Gucci", value: "Gucci" },
+        { text: "Ray-Ban", value: "Ray-Ban" },
+        { text: "Oakley", value: "Oakley" },
+        { text: "Lenskart", value: "Lenskart" },
+        { text: "Tom Ford", value: "Tom Ford" },
+        { text: "Prada", value: "Prada" },
+        { text: "Persol", value: "Persol" },
+      ],
+      onFilter: (value, record) => record.brand.includes(value as string),
     },
     {
       title: "Price",
       dataIndex: "price",
+      sorter: (a, b) => a.price - b.price,
     },
     {
       title: "Quantity",
       dataIndex: "quantity",
       align: "center",
+      sorter: (a, b) => a.quantity - b.quantity,
     },
     {
-      title: "Color",
-      dataIndex: "color",
+      title: "Color & Shape",
+      dataIndex: "color&shape",
+      render: (_value, row) => {
+        console.log("row", row)
+        return (
+          <Flex gap={5} align="center">
+            <div
+              style={{
+                width: "16px",
+                height: "16px",
+                border: row.color === "White" ? "1px solid gray" : "",
+                borderRadius: "50%",
+                backgroundColor: row.color,
+              }}
+            ></div>
+            <span>{row.frameShape}</span>
+          </Flex>
+        );
+      }
     },
+    { title: "Material", dataIndex: "frameMaterial" },
+    { title: "Shape", dataIndex: "frameShape" },
+    {title:"Gender", dataIndex:"gender"},
     {
       title: "Actions",
       dataIndex: "action",
@@ -277,7 +309,7 @@ const EyeglassesList = () => {
           marginTop: "20px",
         }}
       >
-        <Search 
+        <Search
           placeholder="Name or color"
           size="large"
           onSearch={onSearch}
@@ -334,10 +366,10 @@ const EyeglassesList = () => {
           theme="light"
           defaultSelectedKeys={["Show All"]}
           style={{
-            fontWeight: 400,
-            fontSize: "16px",
-            marginBottom: "40px",
-            marginTop: "10px",
+            fontWeight: 500,
+            fontSize: "20px",
+            marginBottom: "20px",
+            marginTop: "20px",
             width: screens.xs ? 170 : "auto",
           }}
         />
