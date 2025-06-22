@@ -28,7 +28,7 @@ const Users = () => {
         { text: 'Female', value: 'Female' },
         { text: 'Other', value: 'Other' },
       ],
-       onFilter: (value, record) => record.gender === value,
+      onFilter: (value, record) => record.gender === value,
     },
     {
       title: "Age",
@@ -38,14 +38,15 @@ const Users = () => {
     },
     { title: "Contact No", dataIndex: "contactNo", key: "contactNo" },
     { title: "Address", dataIndex: "address", key: "address" },
-    { title: "Role", 
-      dataIndex: "role", 
+    {
+      title: "Role",
+      dataIndex: "role",
       key: "role",
       filters: [
         { text: 'Manager', value: 'Manager' },
         { text: 'User', value: 'User' }
       ],
-       onFilter: (value, record) => record.role === value,
+      onFilter: (value, record) => record.role === value,
     },
     {
       title: "Status",
@@ -75,7 +76,12 @@ const Users = () => {
           <Skeleton active title={false} paragraph={{ rows: 10 }} />
         </div>
       ) : (
-        <Table<TUser> columns={columns} dataSource={data?.data} loading={isLoading} />
+        <Table<TUser>
+          columns={columns}
+          dataSource={data?.data}
+          loading={isLoading}
+          scroll={{ x: 600 }}
+        />
       )}
     </div>
   );
