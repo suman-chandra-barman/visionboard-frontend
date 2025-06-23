@@ -30,7 +30,7 @@ const Login = () => {
         dispatch(setUser({ user: userInfo, token: res?.data?.accessToken }));
         navigate("/");
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(error);
       setError(error?.data?.message || "Something went wrong!");
     }
@@ -102,11 +102,11 @@ const Login = () => {
             <Col span={24}>
               <Card title="Demo Credentials" style={{ marginTop: "20px" }} bordered>
                 <div style={{ marginLeft: '5px' }}>
-                  <Tag color="blue" style={{fontWeight:"bold"}}>Manager</Tag><br />
+                  <Tag color="blue" style={{ fontWeight: "bold" }}>Manager</Tag><br />
                   <Text>Email: </Text><Text copyable>sam@gmail.com</Text><br />
                   <Text>Password: </Text><Text copyable>123456</Text>
                   <br />
-                  <Tag color="green" style={{marginTop:"10px", fontWeight:"bold"}}>User</Tag><br />
+                  <Tag color="green" style={{ marginTop: "10px", fontWeight: "bold" }}>User</Tag><br />
                   <Text>Email: </Text><Text copyable>suman@gmail.com</Text><br />
                   <Text>Password: </Text><Text copyable>123456</Text>
                 </div>
