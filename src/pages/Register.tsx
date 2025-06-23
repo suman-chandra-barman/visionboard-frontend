@@ -9,7 +9,7 @@ import { jwtVerify } from "../utils/jwtVerify";
 import { useAppDispatch } from "../redux/hook";
 import { setUser } from "../redux/features/auth/authSlice";
 import LNForm from "../components/form/LNForm";
-import LNInput from "../components/form/LNInput";
+import LNInput from "../components/form/VBInput";
 import { FieldValues } from "react-hook-form";
 import LNSelect from "../components/form/LNSelect";
 import { toast } from "sonner";
@@ -101,7 +101,7 @@ const Register = () => {
         <LNForm onSubmit={onSubmit}>
           <Row justify="center" style={{ marginBottom: "15px" }}>
             <Title level={2}>
-              Register Lens<span style={{ color: "#1677ff" }}>Hub</span>
+              Create new ccount
             </Title>
           </Row>
           {error && (

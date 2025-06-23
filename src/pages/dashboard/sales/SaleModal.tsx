@@ -1,7 +1,7 @@
 import LHModal from "../../../components/modal/LHModal";
 import { Dispatch, SetStateAction, useState } from "react";
 import LNForm from "../../../components/form/LNForm";
-import LNInput from "../../../components/form/LNInput";
+import LNInput from "../../../components/form/VBInput";
 import { FieldValues } from "react-hook-form";
 import { Button, DatePicker, DatePickerProps } from "antd";
 import { useCreateSalesMutation } from "../../../redux/features/sales/salesApi";

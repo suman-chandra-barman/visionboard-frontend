@@ -2,7 +2,7 @@
 import { Button, Col, Row } from "antd";
 import { FieldValues } from "react-hook-form";
 import LNForm from "../../../components/form/LNForm";
-import LNInput from "../../../components/form/LNInput";
+import LNInput from "../../../components/form/VBInput";
 import LNFile from "../../../components/form/LNFile";
 import LNSelect from "../../../components/form/LNSelect";
 import {

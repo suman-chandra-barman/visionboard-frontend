@@ -1,8 +1,8 @@
 import { Form, Input } from "antd";
 import { Controller } from "react-hook-form";
 
-type TLNInputProps = {
-  type: string;
+type TVBInputProps = {
+  type: "text"| "number" | "email" | "password";
   name: string;
   label?: string;
   placeholder?: string;
@@ -10,14 +10,7 @@ type TLNInputProps = {
   size?: "large" | "small";
 };
 
-const LNInput = ({
-  type,
-  name,
-  label,
-  placeholder,
-  rules,
-  size = "large",
-}: TLNInputProps) => {
+const VBInput = ({ type, name, label, placeholder, rules, size = "large" }: TVBInputProps) => {
   return (
     <Controller
       name={name}
@@ -28,13 +21,22 @@ const LNInput = ({
           style={{ marginBottom: "20px", fontWeight: 500 }}
           validateStatus={error ? "error" : ""}
         >
-          <Input
-            {...field}
-            type={type}
-            id={name}
-            placeholder={placeholder}
-            size={size}
-          />
+          {type === "password" ? (
+            <Input.Password
+              {...field}
+              id={name}
+              placeholder={placeholder}
+              size={size}
+            />
+          ) : (
+            <Input
+              {...field}
+              type={type}
+              id={name}
+              placeholder={placeholder}
+              size={size}
+            />
+          )}
           {error && <small style={{ color: "red" }}>{error.message}</small>}
         </Form.Item>
       )}
@@ -42,4 +44,5 @@ const LNInput = ({
   );
 };
 
-export default LNInput;
+export default VBInput;
+

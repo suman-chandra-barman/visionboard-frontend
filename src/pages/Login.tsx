@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Row, Col, Flex, Typography } from "antd";
+import { Button, Row, Col, Flex, Typography, Tag, Card } from "antd";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 import { toast } from "sonner";
 import { jwtVerify } from "../utils/jwtVerify";
@@ -7,16 +6,15 @@ import { useAppDispatch } from "../redux/hook";
 import { setUser } from "../redux/features/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import LNForm from "../components/form/LNForm";
-import LNInput from "../components/form/LNInput";
 import { FieldValues } from "react-hook-form";
-import Title from "antd/es/typography/Title";
 import { useState } from "react";
+import VBInput from "../components/form/VBInput";
+const { Text, Title } = Typography;
 
 const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
   const [login, { isLoading }] = useLoginMutation();
 
   const onSubmit = async (value: FieldValues) => {
@@ -24,19 +22,17 @@ const Login = () => {
       email: value.email,
       password: value.password,
     };
-
     try {
       const res = await login(data).unwrap();
       if (res.success) {
         toast.success("Login successful!", { duration: 2000 });
         const userInfo = jwtVerify(res?.data?.accessToken);
-
         dispatch(setUser({ user: userInfo, token: res?.data?.accessToken }));
         navigate("/");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      setError(error.data.message || "Something went wrong!");
+      setError(error?.data?.message || "Something went wrong!");
     }
   };
 
@@ -55,24 +51,27 @@ const Login = () => {
         <LNForm onSubmit={onSubmit}>
           <Row justify="center" style={{ marginBottom: "15px" }}>
             <Title level={2}>
-              Login Lens<span style={{ color: "#1677ff" }}>Hub</span>
+              Login Vision<span style={{ color: "#1677ff" }}>Board</span>
             </Title>
           </Row>
+
           {error && (
             <Row
               justify="center"
+              align="middle"
               style={{
                 marginBottom: "15px",
                 backgroundColor: "#f8d7da",
-                padding: "8px",
+                padding: "5px",
               }}
             >
               <Title level={5}>{error}</Title>
             </Row>
           )}
+
           <Row gutter={15}>
             <Col span={24}>
-              <LNInput
+              <VBInput
                 type="email"
                 name="email"
                 placeholder="Email"
@@ -80,7 +79,7 @@ const Login = () => {
               />
             </Col>
             <Col span={24}>
-              <LNInput
+              <VBInput
                 type="password"
                 name="password"
                 placeholder="Password"
@@ -98,6 +97,24 @@ const Login = () => {
                 Login
               </Button>
             </Col>
+
+            {/* Demo Credentials */}
+            <Col span={24}>
+              <Card title="Demo Credentials" style={{ marginTop: "20px" }} bordered>
+                <div style={{ marginLeft: '5px' }}>
+                  <Tag color="blue" style={{fontWeight:"bold"}}>User</Tag><br />
+                  <Text>Email: </Text><Text copyable>suman@gmail.com</Text><br />
+                  <Text>Password: </Text><Text copyable>123456</Text>
+
+                  <br />
+
+                  <Tag color="green" style={{marginTop:"10px", fontWeight:"bold"}}>Manager</Tag><br />
+                  <Text>Email: </Text><Text copyable>sam@gmail.com</Text><br />
+                  <Text>Password: </Text><Text copyable>123456</Text>
+                </div>
+              </Card>
+            </Col>
+
             <Col lg={24} style={{ marginTop: "10px", textAlign: "center" }}>
               <Typography>
                 Don't have an account?{" "}
